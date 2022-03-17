@@ -1,6 +1,8 @@
-const express = require("express");
+require("dotenv").config();
 const cors = require("cors");
+const express = require("express");
 
+const connectDb = require("./db/connect");
 const taskRoutes = require("./routes/tasks");
 
 const app = express();
@@ -16,4 +18,11 @@ app.get("/hello", (req, res) => {
 
 app.use("/api/v1/tasks", taskRoutes);
 
-app.listen(port, console.log(`Server is running on http://localhost:${port}`));
+connectDb(process.env.MONGODB_URL)
+  .then(() => {
+    app.listen(
+      port,
+      console.log(`Server is running on http://localhost:${port}`)
+    );
+  })
+  .catch((err) => console.log(err));
